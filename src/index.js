@@ -1,6 +1,6 @@
-import app from './app';
+import http from 'node:http';
 import dbg from 'debug';
-const http = require('http');
+import app from './app.js';
  
 const debug = dbg('document-dummy:server');
  
@@ -9,7 +9,9 @@ app.set('port', port);
 
 const server = http.createServer(app);
 
-server.listen(port);
+server.listen(port, () => {
+  console.log(`App listening on port: ${port}`);
+});
 server.on('error', onError);
 server.on('listening', onListening);
  
