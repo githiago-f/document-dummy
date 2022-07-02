@@ -1,16 +1,15 @@
 import { connection } from '../../infra/database/index.js';
-import { storage } from '../../infra/storage/index.js';
 
-export function getDocument(req, res) {
+const { documents } = connection;
+
+export async function getDocument(req, res) {
+  const { id } = req.query;
+  const document = documents.filter(i => i.id === id).pop();
+  res.status(document ? 200 : 204).json(document);
 }
 
-export function createDocument(req, res) {
-  const { writer, path } = storage.getWriter(req.body.id);
-  writer.write(req.body.document);
-  const idx = connection.documents.push({
-    id: req.body.id,
-    path: path
-  });
-  writer.close();
-  res.status(200).json(connection.documents[idx]);
+export async function createDocument(req, res) {
+  const { id, document } = req.body;
+  const idx = documents.push({ id, document });
+  res.status(201).json(documents[idx]);
 }
